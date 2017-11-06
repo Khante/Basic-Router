@@ -3,8 +3,8 @@ Created on Oct 12, 2016
 
 @author: mwitt_000
 '''
-import network_1
-import link_1
+import network_2
+import link_2
 import threading
 from time import sleep
 
@@ -16,20 +16,20 @@ if __name__ == '__main__':
     object_L = [] #keeps track of objects, so we can kill their threads
     
     #create network nodes
-    client = network_1.Host(1)
+    client = network_2.Host(1)
     object_L.append(client)
-    server = network_1.Host(2)
+    server = network_2.Host(2)
     object_L.append(server)
-    router_a = network_1.Router(name='A', intf_count=1, max_queue_size=router_queue_size)
+    router_a = network_2.Router(name='A', intf_count=1, max_queue_size=router_queue_size)
     object_L.append(router_a)
     
     #create a Link Layer to keep track of links between network nodes
-    link_layer = link_1.LinkLayer()
+    link_layer = link_2.LinkLayer()
     object_L.append(link_layer)
     
     #add all the links
-    link_layer.add_link(link_1.link_1(client, 0, router_a, 0, 50))
-    link_layer.add_link(link_1.link_1(router_a, 0, server, 0, 50))
+    link_layer.add_link(link_2.link_2(client, 0, router_a, 0, 30))
+    link_layer.add_link(link_2.link_2(router_a, 0, server, 0, 30))
     
     
     #start all the objects
@@ -49,7 +49,7 @@ if __name__ == '__main__':
     #    client.udt_send(2, 'Sample data %d' % i)
     
     client.udt_send(2, 'This part surprisingly took a long long time to get done with. Hope rest is easy. Woohooo. is this 80 already?',
-                        50)
+                        30)
     
     #give the network sufficient time to transfer all packets before quitting
     sleep(simulation_time)
