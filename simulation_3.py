@@ -10,7 +10,7 @@ from time import sleep
 
 ##configuration parameters
 router_queue_size = 0 #0 means unlimited
-simulation_time = 3 #give the network sufficient time to transfer all packets before quitting
+simulation_time = 5 #give the network sufficient time to transfer all packets before quitting
 
 if __name__ == '__main__':
     object_L = [] #keeps track of objects, so we can kill their threads
@@ -28,7 +28,7 @@ if __name__ == '__main__':
     object_L.append(router_a)
     router_b = network_3.Router(name='B', intf_count=1, max_queue_size=router_queue_size, fTable={1:0})
     object_L.append(router_b)
-    router_c = network_3.Router(name='C', intf_count=1, max_queue_size=router_queue_size, fTable={1:0})
+    router_c = network_3.Router(name='C', intf_count=1, max_queue_size=router_queue_size, fTable={2:0})
     object_L.append(router_c)
     router_d = network_3.Router(name='D', intf_count=2, max_queue_size=router_queue_size, fTable={1:0,2:1})
     object_L.append(router_d)
@@ -43,10 +43,10 @@ if __name__ == '__main__':
     link_layer.add_link(link_3.link_3(router_b, 0, router_d, 0, 50))
     link_layer.add_link(link_3.link_3(router_d, 0, client3, 0, 50))
 
-    '''     link_layer.add_link(link_3.link_3(client2, 1, router_a, 1, 50))
+    link_layer.add_link(link_3.link_3(client2, 0, router_a, 1, 50))
     link_layer.add_link(link_3.link_3(router_a, 1, router_c, 0, 50))
     link_layer.add_link(link_3.link_3(router_c, 0, router_d, 1, 50))
-    link_layer.add_link(link_3.link_3(router_d, 1, client4, 1, 50)) '''
+    link_layer.add_link(link_3.link_3(router_d, 1, client4, 0, 50)) 
     #start all the objects
     thread_L = []
     thread_L.append(threading.Thread(name=client1.__str__(), target=client1.run))
@@ -67,7 +67,7 @@ if __name__ == '__main__':
     #for i in range(3):
     #    client.udt_send(2, 'Sample data %d' % i)
     
-    #client1.udt_send(4, 'This part')
+    client1.udt_send(4, 'This part')
     client2.udt_send(4,'This part')
     
     #give the network sufficient time to transfer all packets before quitting

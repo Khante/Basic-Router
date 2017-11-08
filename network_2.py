@@ -63,21 +63,18 @@ class NetworkPacket:
     # @param byte_S: byte string representation of the packet
     @classmethod
     def from_byte_S(self, byte_S ,mtu):
-        '''dst_addr = int(byte_S[0 : NetworkPacket.dst_addr_S_length])
-        data_S = byte_S[NetworkPacket.dst_addr_S_length : ]
-        return self(dst_addr, data_S) '''
-        packets = []
-        dst_addr = int(byte_S[0: NetworkPacket.dst_addr_S_length])
         data_S = byte_S[NetworkPacket.dst_addr_S_length:]
-
-        # Fragment
-        offset_size = 0
-        while True:
-            frag_flag = 1 if self.header_length + len(data_S[offset_size:]) > mtu else 0
-            # self(dst_addr, data_S, 1)
-            packets.append(self(dst_addr, data_S[offset_size:offset_size + mtu - self.header_length], frag_flag, offset_size))
-            offset_size = offset_size + mtu - self.header_length
-            if len(data_S[offset_size:]) == 0:
+        dst_addr = int(byte_S[: NetworkPacket.dst_addr_S_length])
+        packets = []
+        offSize = 0
+        while(1):
+            if((self.header_length + len(data_S[offSize:])) > mtu):
+                fragmented = 1
+            else:
+                fragmented = 0
+            packets.append(self(dst_addr,data_S[offSize:(offSize+ mtu -self.header_length)],fragmented, offSize))
+            offSize = offSize+mtu-self.header_length
+            if len(data_S[offSize:]) == 0:
                 break
         return packets
     
@@ -160,7 +157,7 @@ class Router:
                 pkt_S = self.in_intf_L[i].get()
                 #if packet exists make a forwarding decision
                 if pkt_S is not None:
-                    p = NetworkPacket.from_byte_S(pkt_S) #parse a packet out
+                    p = NetworkPacket.from_byte_S(pkt_S,30) #parse a packet out
                     # HERE you will need to implement a lookup into the 
                     # forwarding table to find the appropriate outgoing interface
                     # for now we assume the outgoing interface is also i
